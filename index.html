@@ -1,11 +1,57 @@
 <!DOCTYPE html>
-<html lang="pt-vr">
+<html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Páginas & Palavras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Trilhas Literárias</title>
 </head>
+
 <body>
-    <h1>Em produção...</h1>
+    <header class="site-header">
+        <div class="container header-interno">
+            <div class="logo">
+                📖 Trilhas Literárias
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="pesquisa">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar livro, autor...">
+                </div>
+                <div class="iconeFiltro">
+                    <button class="filter-toggle" id="filterToggleBtn">
+                        <i class="fas fa-sliders-h"></i>
+                    </button>
+                    <div class="genre-dropdown" id="genreDropdown">
+                        <!-- opções serão inseridas via js (ou ao menos planejamos) -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="container">
+        <div class="hero">
+            <h2>Livros são passaportes</h2>
+            <p>resenhas sinceras dos mais diversos gêneros</p>
+        </div>
+        <div id="reviewsGrid" class="reviews-grid"></div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <div class="container">
+            <p>© Nome a ser definido — inspiração para sua próxima leitura</p>
+        </div>
+    </footer>
 </body>
+
 </html>
