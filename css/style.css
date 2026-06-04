@@ -25,7 +25,7 @@ h3,
     padding: 0 24px;
 }
 
-/* ===== HEADER ===== */
+/* ===== HEADER SIMPLES ===== */
 .site-header {
     padding: 24px 0;
     border-bottom: 1px solid #ece3d8;
@@ -35,7 +35,7 @@ h3,
     z-index: 50;
 }
 
-.header-interno {
+.header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -58,15 +58,16 @@ h3,
     margin-left: 8px;
 }
 
-.iconeFiltro {
+/* ícone de filtro + menu flutuante */
+.filter-wrapper {
     position: relative;
 }
 
-/* ===== FILTRO DROPDOWN E BARRA DE PESQUISA ===== */
 .filter-toggle {
     background: none;
     border: none;
     font-size: 1.3rem;
+    cursor: pointer;
     padding: 10px;
     border-radius: 50%;
     transition: all 0.2s;
@@ -86,7 +87,65 @@ h3,
     transform: scale(1.02);
 }
 
-.pesquisa {
+/* menu dropdown de gêneros */
+.genre-dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.15);
+    padding: 12px 0;
+    min-width: 200px;
+    z-index: 100;
+    display: none;
+    border: 1px solid #ece3d8;
+    
+    max-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.genre-dropdown.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.genre-option {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #4a4138;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.genre-option:hover {
+    background: #faf5ed;
+    color: #8b6c45;
+}
+
+.genre-option.active {
+    background: #f5efe7;
+    color: #8b6c45;
+    font-weight: 600;
+    border-left: 3px solid #8b6c45;
+}
+
+/* barra de busca */
+.search-wrap {
     display: flex;
     align-items: center;
     background: white;
@@ -96,7 +155,7 @@ h3,
     gap: 10px;
 }
 
-.pesquisa i {
+.search-wrap i {
     color: #c0aa85;
     font-size: 0.9rem;
 }
@@ -111,7 +170,7 @@ h3,
     font-family: 'Inter', sans-serif;
 }
 
-/* ===== SUDB-HEADER ===== */
+/* ===== HERO SIMPLES ===== */
 .hero {
     margin: 48px 0 40px;
     text-align: center;
@@ -130,11 +189,196 @@ h3,
     margin: 12px auto 0;
 }
 
-/* ===== FOOTER ===== */
+/* ===== GRADE DE RESENHAS ===== */
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+    margin: 40px 0 60px;
+}
+
+.review-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    border: 1px solid #ece3d8;
+    cursor: pointer;
+}
+
+.review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.12);
+    border-color: #ddd0bf;
+}
+
+.card-img {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.genre-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    padding: 4px 12px;
+    border-radius: 30px;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.card-content {
+    padding: 20px 22px 24px;
+}
+
+.book-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #2c241a;
+}
+
+.book-author {
+    font-size: 0.8rem;
+    color: #a48e72;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rating {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 14px;
+    color: #e6b84e;
+    font-size: 0.8rem;
+}
+
+.rating span {
+    color: #9b8a70;
+    margin-left: 6px;
+    font-size: 0.75rem;
+}
+
+.review-summary {
+    font-size: 0.9rem;
+    color: #5a5348;
+    line-height: 1.45;
+    margin-bottom: 18px;
+}
+
+.read-more {
+    background: transparent;
+    border: none;
+    color: #8b6c45;
+    font-weight: 500;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    transition: gap 0.2s;
+}
+
+.read-more:hover {
+    gap: 10px;
+    color: #5f422b;
+}
+
+/* Modal simples */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    max-width: 550px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 28px;
+    padding: 28px 32px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #aa9a84;
+    transition: 0.2s;
+}
+
+.modal-book-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    padding-right: 30px;
+}
+
+.full-review-text {
+    line-height: 1.65;
+    color: #3c352c;
+    margin: 20px 0;
+    white-space: pre-line;
+    font-size: 0.95rem;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: #b9aa92;
+    grid-column: 1 / -1;
+}
+
 footer {
     border-top: 1px solid #ece3d8;
     text-align: center;
     padding: 32px 0;
     color: #b1a186;
     font-size: 0.8rem;
+}
+
+@media (max-width: 680px) {
+    .header-inner {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .hero h2 {
+        font-size: 1.7rem;
+    }
+
+    .search-wrap {
+        width: auto;
+    }
+
+    #searchInput {
+        width: 130px;
+    }
+}
+
+button {
+    background: none;
+    border: none;
 }
