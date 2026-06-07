@@ -1,4 +1,4 @@
-// ==================== DADOS DAS RESENHAS ====================
+// Base de dados usada no site
 const reviewsData = [
     {
         id: 1,
@@ -202,78 +202,70 @@ const reviewsData = [
     }
 ];
 
-// Estado
 let activeGenre = "Todos";
-
-// Extrair gêneros únicos
 const uniqueGenres = ["Todos", ...new Set(reviewsData.map(b => b.genre))];
 
-// Renderizar estrelas
+// Carrega as estrelas de rating
 function renderStars(rating) {
-    let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        stars += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-    }
-    return stars;
+    return Array.from({ length: 5 }, (_, i) => 
+        `<i class="${i < rating ? 'fas' : 'far'} fa-star"></i>`
+    ).join('');
 }
 
-// Filtrar e exibir cards
+// Monta os cards de resenha usando o gênero default ou o selecionado
 function renderReviews() {
     const grid = document.getElementById("reviewsGrid");
     if (!grid) return;
 
-    let filtered = [...reviewsData];
-    if (activeGenre !== "Todos") {
-        filtered = filtered.filter(book => book.genre === activeGenre);
-    }
-    
-
-    if (filtered.length === 0) {
-        grid.innerHTML = `<div class="empty-message"><i class="fas fa-book-open"></i> Nenhuma resenha encontrada<br>Experimente outro gênero ou palavra-chave</div>`;
-        return;
-    }
+    const filtered = activeGenre === "Todos" 
+        ? reviewsData 
+        : reviewsData.filter(book => book.genre === activeGenre);
 
     grid.innerHTML = filtered.map(book => `
-            <div class="review-card" data-id="${book.id}">
-                <div class="card-img" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.05)), url('${book.coverImage}'); background-size: cover;">
-                    <span class="genre-badge">${book.genre}</span>
-                </div>
-                <div class="card-content">
-                    <h3 class="book-title">${escapeHtml(book.title)}</h3>
-                    <div class="book-author"><i class="fas fa-user-pen"></i> ${escapeHtml(book.author)}</div>
-                    <div class="rating">${renderStars(book.rating)} <span>${book.rating}/5</span></div>
-                    <p class="review-summary">${escapeHtml(book.shortReview)}</p>
-                    <button class="read-more" data-id="${book.id}">Ler resenha completa <i class="fas fa-arrow-right"></i></button>
-                </div>
+        <div class="review-card" onclick="openModalById(${book.id})">
+            <div class="card-img" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.05)), url('${book.coverImage}'); background-size: cover;">
+                <span class="genre-badge">${book.genre}</span>
             </div>
-        `).join("");
-
-    // Eventos dos botões "ler mais"
-    document.querySelectorAll('.read-more').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = parseInt(btn.getAttribute('data-id'));
-            const book = reviewsData.find(b => b.id === id);
-            if (book) openModal(book);
-        });
-    });
-
-    // Clique no card inteiro também abre modal
-    document.querySelectorAll('.review-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (e.target.classList.contains('read-more')) return;
-            const id = parseInt(card.getAttribute('data-id'));
-            const book = reviewsData.find(b => b.id === id);
-            if (book) openModal(book);
-        });
-    });
+            <div class="card-content">
+                <h3 class="book-title">${book.title}</h3>
+                <div class="book-author"><i class="fas fa-user-pen"></i> ${book.author}</div>
+                <div class="rating">${renderStars(book.rating)} <span>${book.rating}/5</span></div>
+                <p class="review-summary">${book.shortReview}</p>
+                <button class="read-more">Ler resenha completa <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    `).join("");
 }
 
-// Card de exibição da resenha completa
-function openModal(book) {
+function buildGenreDropdown() {
+    const dropdown = document.getElementById("genreDropdown");
+    if (!dropdown) return;
+
+    dropdown.innerHTML = uniqueGenres.map(genre => `
+        <div class="genre-option ${activeGenre === genre ? 'active' : ''}" 
+             onclick="selectGenre(event, '${genre}')">
+            ${genre}
+        </div>
+    `).join("");
+}
+
+// Atualiza o gênero ativo e os cards
+function selectGenre(event, genre) {
+    event.stopPropagation();
+    activeGenre = genre;
+    renderReviews();
+    buildGenreDropdown(); // Atualiza a classe 'active'
+    document.getElementById("genreDropdown").classList.remove("show");
+}
+
+// Abre o card da resenha
+function openModalById(id) {
+    const book = reviewsData.find(b => b.id === id);
+    if (!book) return;
+
     const modal = document.getElementById("reviewModal");
     document.getElementById("modalBookTitle").innerText = book.title;
-    document.getElementById("modalAuthor").innerHTML = `<i class="fas fa-feather-alt"></i> ${book.author}`;
+    document.getElementById("modalAuthor").innerText = book.author;
     document.getElementById("modalGenreBadge").innerText = book.genre;
     document.getElementById("modalFullReview").innerText = book.fullReview;
     document.getElementById("modalRating").innerHTML = renderStars(book.rating) + ` <span style="color:#9b8a70;">(${book.rating}/5)</span>`;
@@ -284,70 +276,27 @@ function closeModal() {
     document.getElementById("reviewModal").style.display = "none";
 }
 
-// Helper
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function (m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
+// Inicializa o conteúdo da página 
+document.addEventListener("DOMContentLoaded", () => {
+    renderReviews();
+    buildGenreDropdown();
 
-// Construir dropdown de gêneros
-function buildGenreDropdown() {
-    const dropdown = document.getElementById("genreDropdown");
-    if (!dropdown) return;
-    dropdown.innerHTML = '';
-    uniqueGenres.forEach(genre => {
-        const option = document.createElement("div");
-        option.className = `genre-option ${activeGenre === genre ? 'active' : ''}`;
-        option.textContent = genre;
-        option.addEventListener("click", (e) => {
-            e.stopPropagation();
-            activeGenre = genre;
-            renderReviews();
-            // Atualizar visual do dropdown
-            document.querySelectorAll('.genre-option').forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
-            // Fechar dropdown após seleção
-            document.getElementById("genreDropdown").classList.remove("show");
-        });
-        dropdown.appendChild(option);
-    });
-}
-
-// Alternar dropdown
-function initFilterToggle() {
     const toggleBtn = document.getElementById("filterToggleBtn");
     const dropdown = document.getElementById("genreDropdown");
-    if (!toggleBtn || !dropdown) return;
-
-    toggleBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle("show");
-    });
-
-    // Fechar dropdown ao clicar fora
-    document.addEventListener("click", (e) => {
-        if (!toggleBtn.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.classList.remove("show");
-        }
-    });
-}
-
-// Carrega o conteúdo da página
-document.addEventListener("DOMContentLoaded", () => {
-    buildGenreDropdown();
-    renderReviews();
-    initFilterToggle();
-    initSearch();
-
     const modal = document.getElementById("reviewModal");
-    const closeSpan = document.querySelector(".close-modal");
-    if (closeSpan) closeSpan.addEventListener("click", closeModal);
-    window.addEventListener("click", (e) => {
+
+    if (toggleBtn) {
+        toggleBtn.onclick = (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle("show");
+        };
+    }
+
+    window.onclick = (e) => {
         if (e.target === modal) closeModal();
-    });
+        if (dropdown && !dropdown.contains(e.target)) dropdown.classList.remove("show");
+    };
+
+    const closeSpan = document.querySelector(".close-modal");
+    if (closeSpan) closeSpan.onclick = closeModal;
 });
